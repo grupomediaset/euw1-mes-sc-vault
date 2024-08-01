@@ -5,7 +5,7 @@ variable "name" {
 
 variable "short_name" {
   type    = string
-  default = "vault"
+  default = "vault_k8s"
 }
 
 variable "description" {
