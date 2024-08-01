@@ -1,0 +1,42 @@
+server:
+  affinity: ""
+  ha:
+    enabled: true
+    replicas: 3
+    raft:
+      enabled: true
+      config: |
+          ui = true
+          cluster_name = "vault-cluster"
+          storage "raft" {
+             path  = "/vault/data/"
+          }
+
+          listener "tcp" {
+             address = "0.0.0.0:8200"
+             cluster_address = "0.0.0.0:8201"
+             tls_disable = "true"
+          }
+
+          seal "transit" {
+            address = "http://vault-transit.vault-transit-internal:8200"
+            token = "${TOKEN_AUTOUNSEAL}"
+            disable_renewal = "false"
+            key_name = "cluster_unseal"
+            mount_path = "transit/"
+            tls_skip_verify = "true"
+          }
+
+  dataStorage:
+    enabled: true
+
+  auditStorage:
+    enabled: true
+
+global:
+  enabled: true
+  namespace: 'vault-cluster'
+  tlsDisable: true # updated to enable TLS
+
+injector:
+  enabled: false
